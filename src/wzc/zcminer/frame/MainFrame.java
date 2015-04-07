@@ -1,10 +1,15 @@
 package wzc.zcminer.frame;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileReader;
+import java.util.List;
 
 import javax.swing.*;
+
+import com.opencsv.CSVReader;
 public class MainFrame {
 	static final int WIDTH = 700;
 	static final int HEIGHT = 600;
@@ -28,12 +33,26 @@ public class MainFrame {
         {
         	public void actionPerformed(ActionEvent e) 
         	{
-        		JPanel dataPanel =new JPanel();
-        		JLabel dataLabel=new JLabel();
-        		dataLabel.setText("this is your data");
-        		dataPanel.add(dataLabel);
-        		mainFrame.setContentPane(dataPanel);
-        		mainFrame.setVisible(true);
+        		 try {
+        			JPanel panel = new JPanel();
+        			JLabel startLabel=new JLabel();
+        			startLabel.setText("Time to get start!");
+        			panel.add(startLabel);
+        			
+	        		CSVReader reader = new CSVReader(new FileReader("ExampleLog.csv")); 
+	        		 
+	        		List<String[]> myEntries = reader.readAll();
+	        		String[] headlines = myEntries.remove(0);
+	        		String[][] rowData = myEntries.toArray(new String[0][]);
+	        		JTable table = new JTable(rowData, headlines);
+	        		JScrollPane dataPanel =new JScrollPane(table);
+	        		mainFrame.getContentPane().removeAll();
+	        		mainFrame.add(panel,BorderLayout.NORTH);
+	        		mainFrame.add(dataPanel,BorderLayout.CENTER);
+	        		mainFrame.setVisible(true);
+        		 } catch (Exception ex) {
+        	            ex.printStackTrace();
+        	        }
         	}
         });
 		

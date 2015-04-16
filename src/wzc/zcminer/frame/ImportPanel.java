@@ -12,7 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+
+import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
 
@@ -26,9 +27,11 @@ public class ImportPanel extends JPanel{
 	static JRadioButton resourseButton;
 	static JRadioButton otherButton;
 	static ButtonGroup buttonGroup;
+	final static int MAXHEADINDEX = 20;
 	public ImportPanel(String dataName) {
 		// TODO Auto-generated constructor stub
 		try {
+			int[] headIndex = new int[MAXHEADINDEX]; 
 			
 			setLayout(new BorderLayout());
 			radioPanel = new JPanel();
@@ -39,8 +42,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 1;
 	        	}
 	        });
 			
@@ -49,8 +51,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 2;
 	        	}
 	        });
 			
@@ -59,8 +60,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 3;
 	        	}
 	        });
 			
@@ -70,8 +70,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 4;
 	        	}
 	        });
 			
@@ -80,8 +79,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 5;
 	        	}
 	        });
 			
@@ -90,8 +88,7 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{
-	        		
-	        		
+	        		headIndex[table.column] = 6;
 	        	}
 	        });
 			
@@ -126,6 +123,38 @@ public class ImportPanel extends JPanel{
 	        {
 	        	public void actionPerformed(ActionEvent e) 
 	        	{	
+	        		
+	        		for (int i = 0; i < myEntries.size(); i++)
+	        		{
+	        			EventCase eventCase = new EventCase();
+	        			for (int j = 0 ; j< rowData[i].length; j++)
+	        			{
+	        				switch (headIndex[j]) {
+							case 2:
+								eventCase.setCase(rowData[i][j]);
+								break;
+							case 3:
+								eventCase.setActivity(rowData[i][j]);
+								if (! MainFrame.graphNet.activityExist(rowData[i][j]))
+								{
+									MainFrame.graphNet.addActivity(rowData[i][j]);
+								}
+								break;
+							case 4:
+								eventCase.setDate(rowData[i][j]);
+								break;
+							case 5:
+								eventCase.setResourse(rowData[i][j]);
+								break;
+							default:
+								break;
+							}
+	        			}
+	        			MainFrame.caseCollection.addCase(eventCase);
+	        		}
+	        		
+	        		MainFrame.graphNet.setMemory();
+	        		
 	        	}
 	        });
 			

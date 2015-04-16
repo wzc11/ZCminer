@@ -5,12 +5,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
+
+
 import javax.swing.*;
+
+import wzc.zcminer.global.CaseCollection;
+import wzc.zcminer.global.GraphNet;
 
 
 public class MainFrame {
 	static final int WIDTH = 1000;
 	static final int HEIGHT = 600;
+	static CaseCollection caseCollection;
+	static GraphNet graphNet;
+	
 	JFrame mainFrame;
 	public MainFrame() {
 		// TODO Auto-generated constructor stub
@@ -39,6 +47,9 @@ public class MainFrame {
         	}
         });
 		
+		
+		caseCollection = new CaseCollection();
+		graphNet = new GraphNet();
 		
 		startPanel.setLayout(new FlowLayout());
 		startPanel.add(startLabel);

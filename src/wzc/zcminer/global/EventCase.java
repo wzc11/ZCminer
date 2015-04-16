@@ -5,17 +5,28 @@ public class EventCase {
 	String activity;
 	String startDateString;
 	String endDateString;
-	public EventCase(String caseID) {
+	String resourseString;
+	public EventCase() {
 		// TODO Auto-generated constructor stub
+		startDateString = "";
+	}
+	public void setCase(String caseID) {
 		this.caseID = caseID;
 	}
 	public void setActivity(String activity) {
 		this.activity = activity;
 	}
-	public void setStartDate(String startDateString) {
-		this.startDateString = startDateString;
+	public void setResourse(String resourse){
+		this.resourseString = resourse;
 	}
-	public void setEndDate(String endDateString) {
-		this.endDateString = endDateString;
+	
+	public void setDate(String dateString) {
+		if (startDateString.equals(""))
+		{
+			this.startDateString = dateString;
+		} else
+		{
+			this.endDateString = dateString;
+		}
 	}
 }

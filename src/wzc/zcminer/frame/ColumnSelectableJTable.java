@@ -17,6 +17,7 @@ public class ColumnSelectableJTable extends JTable{
                 if(!e.isShiftDown()) clearSelection();  
                 column=header.columnAtPoint(e.getPoint());  
                 addColumnSelectionInterval(column,column);  
+                ImportPanel.buttonGroup.clearSelection();
             }  
         });  
     }  

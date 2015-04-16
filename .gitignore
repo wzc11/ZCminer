@@ -1,2 +1,4 @@
-.DS_Stor
+.DS_Store
 bin/
+*.class
+*.classpath

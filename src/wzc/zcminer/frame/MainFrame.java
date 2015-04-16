@@ -1,18 +1,24 @@
 package wzc.zcminer.frame;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileReader;
-import java.util.List;
+
+
+
 
 import javax.swing.*;
 
-import com.opencsv.CSVReader;
+import wzc.zcminer.global.CaseCollection;
+import wzc.zcminer.global.GraphNet;
+
+
 public class MainFrame {
-	static final int WIDTH = 700;
+	static final int WIDTH = 1000;
 	static final int HEIGHT = 600;
+	static CaseCollection caseCollection;
+	static GraphNet graphNet;
+	
 	JFrame mainFrame;
 	public MainFrame() {
 		// TODO Auto-generated constructor stub
@@ -33,22 +39,17 @@ public class MainFrame {
         {
         	public void actionPerformed(ActionEvent e) 
         	{
-        		 try {        			
-	        		CSVReader reader = new CSVReader(new FileReader("ExampleLog.csv")); 
-	        		 
-	        		List<String[]> myEntries = reader.readAll();
-	        		String[] headlines = myEntries.remove(0);
-	        		String[][] rowData = myEntries.toArray(new String[0][]);
-	        		JTable table = new JTable(rowData, headlines);
-	        		JScrollPane dataPanel =new JScrollPane(table);
-	        		mainFrame.setContentPane(dataPanel);
-	        		mainFrame.setVisible(true);
-        		 } catch (Exception ex) {
-        	            ex.printStackTrace();
-        	        }
+        		ImportPanel importPanel = new ImportPanel("ExampleLog.csv");
+	        	mainFrame.getContentPane().removeAll();
+	       		mainFrame.setContentPane(importPanel);
+	       		mainFrame.setVisible(true);
+        		
         	}
         });
 		
+		
+		caseCollection = new CaseCollection();
+		graphNet = new GraphNet();
 		
 		startPanel.setLayout(new FlowLayout());
 		startPanel.add(startLabel);
@@ -61,3 +62,4 @@ public class MainFrame {
     	new MainFrame();
     }
 }
+

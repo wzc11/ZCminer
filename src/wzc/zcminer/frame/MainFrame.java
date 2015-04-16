@@ -33,12 +33,7 @@ public class MainFrame {
         {
         	public void actionPerformed(ActionEvent e) 
         	{
-        		 try {
-        			JPanel panel = new JPanel();
-        			JLabel startLabel=new JLabel();
-        			startLabel.setText("Time to get start!");
-        			panel.add(startLabel);
-        			
+        		 try {        			
 	        		CSVReader reader = new CSVReader(new FileReader("ExampleLog.csv")); 
 	        		 
 	        		List<String[]> myEntries = reader.readAll();
@@ -46,9 +41,7 @@ public class MainFrame {
 	        		String[][] rowData = myEntries.toArray(new String[0][]);
 	        		JTable table = new JTable(rowData, headlines);
 	        		JScrollPane dataPanel =new JScrollPane(table);
-	        		mainFrame.getContentPane().removeAll();
-	        		mainFrame.add(panel,BorderLayout.NORTH);
-	        		mainFrame.add(dataPanel,BorderLayout.CENTER);
+	        		mainFrame.setContentPane(dataPanel);
 	        		mainFrame.setVisible(true);
         		 } catch (Exception ex) {
         	            ex.printStackTrace();

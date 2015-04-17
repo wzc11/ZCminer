@@ -1,3 +1,4 @@
+
 package wzc.zcminer.frame;
 
 import java.awt.BorderLayout;
@@ -28,10 +29,13 @@ public class ImportPanel extends JPanel{
 	static JRadioButton otherButton;
 	static ButtonGroup buttonGroup;
 	final static int MAXHEADINDEX = 20;
+	int [] headIndex;
+	String[][] rowData;
+	List<String[]> myEntries;
 	public ImportPanel(String dataName) {
 		// TODO Auto-generated constructor stub
 		try {
-			int[] headIndex = new int[MAXHEADINDEX]; 
+			headIndex = new int[MAXHEADINDEX]; 
 			
 			setLayout(new BorderLayout());
 			radioPanel = new JPanel();
@@ -110,9 +114,9 @@ public class ImportPanel extends JPanel{
 			add(radioPanel, BorderLayout.PAGE_START);
 			
 			CSVReader reader = new CSVReader(new FileReader(dataName));  
-			List<String[]> myEntries = reader.readAll();
+			myEntries = reader.readAll();
 			String[] headlines = myEntries.remove(0);
-			String[][] rowData = myEntries.toArray(new String[0][]);
+			rowData = myEntries.toArray(new String[0][]);
 			table = new ColumnSelectableJTable(rowData, headlines);
 			JScrollPane dataPanel =new JScrollPane(table);
 			add(dataPanel,BorderLayout.CENTER);

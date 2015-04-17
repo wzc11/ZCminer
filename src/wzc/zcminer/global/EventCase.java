@@ -13,11 +13,25 @@ public class EventCase {
 	public void setCase(String caseID) {
 		this.caseID = caseID;
 	}
+	public String getCase() {
+		return caseID;
+	}
+	
 	public void setActivity(String activity) {
 		this.activity = activity;
 	}
+	
+	public String getActivity(){
+		return activity;
+	}
+	
+	
 	public void setResourse(String resourse){
 		this.resourseString = resourse;
+	}
+	
+	public String getResourse() {
+		return resourseString;
 	}
 	
 	public void setDate(String dateString) {
@@ -29,4 +43,6 @@ public class EventCase {
 			this.endDateString = dateString;
 		}
 	}
+	
+	
 }

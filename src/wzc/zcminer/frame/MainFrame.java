@@ -19,7 +19,7 @@ public class MainFrame {
 	static CaseCollection caseCollection;
 	static GraphNet graphNet;
 	
-	JFrame mainFrame;
+	static JFrame mainFrame;
 	public MainFrame() {
 		// TODO Auto-generated constructor stub
 		mainFrame = new JFrame();

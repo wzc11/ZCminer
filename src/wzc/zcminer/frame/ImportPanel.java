@@ -159,6 +159,31 @@ public class ImportPanel extends JPanel{
 	        		
 	        		MainFrame.graphNet.setMemory();
 	        		
+	        		int lastActivityId = -1;
+	        		String lastCase = "";
+	        		for (int i = 0; i < myEntries.size(); i++)
+	        		{
+	        			EventCase eventCase = MainFrame.caseCollection.getCase(i);
+	        			String activityName = eventCase.getActivity();
+	        			String caseName = eventCase.getCase();
+	        			int activityId = MainFrame.graphNet.getActivityId(activityName);
+	        			MainFrame.graphNet.setActivityName(activityId, activityName);
+	        			if (caseName.equals(lastCase)){
+	        				MainFrame.graphNet.addActivityFre(activityId);
+	        				MainFrame.graphNet.addActivityQueFre(lastActivityId, activityId);
+	        				lastActivityId = activityId;
+	        			}else{
+	        				lastCase = caseName;
+	        				lastActivityId = activityId;
+	        				MainFrame.graphNet.addActivityFre(lastActivityId);
+	        			}	
+	        		}
+	        		
+	        		GraphPanel graphPanel = new GraphPanel();
+	        		MainFrame.mainFrame.getContentPane().removeAll();
+	        		MainFrame.mainFrame.setContentPane(graphPanel);
+	        		MainFrame.mainFrame.setVisible(true);
+	        		
 	        	}
 	        });
 			

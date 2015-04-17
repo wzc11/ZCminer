@@ -12,4 +12,8 @@ public class CaseCollection {
 	public void addCase(EventCase c) {
 		cases.add(c);
 	}
+	
+	public EventCase getCase(int pos) {
+		return cases.get(pos);
+	}
 }

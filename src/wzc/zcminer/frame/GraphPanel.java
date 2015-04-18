@@ -1,12 +1,16 @@
 package wzc.zcminer.frame;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -15,6 +19,7 @@ import javax.swing.event.ChangeListener;
 
 import com.mxgraph.layout.mxParallelEdgeLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -28,7 +33,7 @@ public class GraphPanel extends JPanel{
 	public GraphPanel() {
 		// TODO Auto-generated constructor stub
 		
-		setLayout(new GridBagLayout() );
+		setLayout(new BorderLayout());
 		
 		sliderJPanel = new JPanel();
 		sliderJPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -38,7 +43,7 @@ public class GraphPanel extends JPanel{
 		int maxActivityQueFre = MainFrame.graphNet.getMaxActivityQueFre();
 		pathSlider.setMaximum(maxActivityQueFre / 10);
 		pathSlider.setValue(maxActivityQueFre / 10);
-		pathSlider.setExtent(maxActivityQueFre / 100);
+		pathSlider.setExtent(maxActivityQueFre / 300);
 
 		
 		pathSlider.addChangeListener(new ChangeListener() {
@@ -54,21 +59,21 @@ public class GraphPanel extends JPanel{
 		parent = graph.getDefaultParent();
 		graphComponent = new mxGraphComponent(graph);
 		paintGraph();
-		GridBagConstraints grapgBagConstraints = new GridBagConstraints();
+/*		GridBagConstraints grapgBagConstraints = new GridBagConstraints();
 		grapgBagConstraints.gridwidth = 3;
 		grapgBagConstraints.gridheight = 1;
 		grapgBagConstraints.weightx = 0.7;
 		grapgBagConstraints.weighty = 1;
-		grapgBagConstraints.fill = GridBagConstraints.BOTH;
-		add(graphComponent,grapgBagConstraints);
+		grapgBagConstraints.fill = GridBagConstraints.NONE;   */
+		add(graphComponent,BorderLayout.CENTER);  
 		
-		GridBagConstraints sliderBagConstraints = new GridBagConstraints();
+	/*	GridBagConstraints sliderBagConstraints = new GridBagConstraints();
 		sliderBagConstraints.gridwidth = 1;
 		sliderBagConstraints.gridheight = 1;
 		sliderBagConstraints.weightx = 0.3;
 		sliderBagConstraints.weighty = 1;
-		sliderBagConstraints.fill = GridBagConstraints.BOTH;
-		add(sliderJPanel, sliderBagConstraints );
+		sliderBagConstraints.fill = GridBagConstraints.BOTH;  */
+		add(sliderJPanel, BorderLayout.EAST);
 		
 		
 	}
@@ -80,10 +85,15 @@ public class GraphPanel extends JPanel{
 			graph.selectAll();
 			graph.removeCells();
 			Object[] v = new Object[MainFrame.graphNet.activityCount];
-			for (int i = 0; i< MainFrame.graphNet.activityCount; i++)
+			v[0] = graph.insertVertex(parent, null, MainFrame.graphNet.activityNames[0],
+					400, 400, 50, 20);
+			v[1] = graph.insertVertex(parent, null, MainFrame.graphNet.activityNames[1],
+					400, 400, 50, 20);
+			
+			for (int i = 2; i< MainFrame.graphNet.activityCount; i++)
 			{
 				v[i] = graph.insertVertex(parent, null, MainFrame.graphNet.activityNames[i],
-						400, 400, 100, 50);
+						400, 400, 80, 40);
 			}
 			
 			for (int i = 0; i< MainFrame.graphNet.activityCount; i++)
@@ -96,15 +106,46 @@ public class GraphPanel extends JPanel{
 			
 			new mxHierarchicalLayout(graph).execute(graph.getDefaultParent());
 			new mxParallelEdgeLayout(graph).execute(graph.getDefaultParent());  
-			
 		}
 		finally
 		{
 			graph.getModel().endUpdate();
 		}
-		
-		graphComponent.validateGraph();
-		
+		ZoomtoCenter();
+		ZoomtoFit();
 	}
+	
+	public void ZoomtoFit() {
+		
+		double newScale = 1;
+		Dimension graphSize = graphComponent.getGraphControl().getSize();
+        Dimension viewPortSize = graphComponent.getViewport().getSize();
+
+        int gw = (int) graphSize.getWidth();
+        int gh = (int) graphSize.getHeight();
+
+        if (gw > 0 && gh > 0) {
+            int w = (int) viewPortSize.getWidth();
+            int h = (int) viewPortSize.getHeight();
+
+            newScale = Math.min((double) w / gw, (double) h / gh);
+        }
+        
+        graphComponent.zoom(newScale);
+        
+	}
+	
+	public void ZoomtoCenter() {
+	       Dimension graphSize = graphComponent.getGraphControl().getSize();
+           Dimension viewPortSize = graphComponent.getViewport().getSize();
+
+           int x = graphSize.width/2 - viewPortSize.width/2;
+           int y = graphSize.height/2 - viewPortSize.height/2;
+           int w = viewPortSize.width;
+           int h = viewPortSize.height;
+
+           graphComponent.getGraphControl().scrollRectToVisible( new Rectangle( x, y, w, h));
+	}
+	
 		
 }

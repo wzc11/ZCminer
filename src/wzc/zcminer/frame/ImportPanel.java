@@ -173,6 +173,10 @@ public class ImportPanel extends JPanel{
 	        				MainFrame.graphNet.addActivityQueFre(lastActivityId, activityId);
 	        				lastActivityId = activityId;
 	        			}else{
+	        				if (lastActivityId != -1){
+	        					MainFrame.graphNet.addActivityQueFre(lastActivityId, 1);
+	        					MainFrame.graphNet.addActivityQueFre(0, activityId);
+	        				}
 	        				lastCase = caseName;
 	        				lastActivityId = activityId;
 	        				MainFrame.graphNet.addActivityFre(lastActivityId);

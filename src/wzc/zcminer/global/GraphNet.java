@@ -9,11 +9,15 @@ public class GraphNet {
   public int[][] activityQueFre;
   public int[] activityFre;
   public int activityCount;
+  public int maxActivityFre;
+  public int maxActivityQuiFre;
   
   public GraphNet() {
 	// TODO Auto-generated constructor stub
 	  activityIDMap =  new HashMap<String,Integer>();
-	  activityCount = 0;
+	  activityCount = 2;
+	  maxActivityFre = 0;
+	  maxActivityQuiFre = 0;
   }
   
   public boolean activityExist(String activityName) {
@@ -23,10 +27,18 @@ public class GraphNet {
   
   public void addActivityFre(int pos) {
 	activityFre[pos]++;
+	if (activityFre[pos] > maxActivityFre)
+	{
+		maxActivityFre = activityFre[pos];
+	}
   }
   
   public void addActivityQueFre(int parent, int children) {
 	activityQueFre[parent][children]++;
+	if (activityQueFre[parent][children] > maxActivityQuiFre)
+	{
+		maxActivityQuiFre = activityQueFre[parent][children];
+	}
 }
   
   public void setActivityName(int id, String name) {
@@ -46,7 +58,17 @@ public class GraphNet {
 	  activityNames = new String[activityCount];
 	  activityQueFre = new int[activityCount][activityCount];
 	  activityFre = new int[activityCount];
+	  activityNames[0] = "begin";
+	  activityNames[1] = "end";
 	
+  }
+  
+  public int getMaxActivityFre() {
+	 return maxActivityFre;
+  }
+  
+  public int getMaxActivityQueFre() {
+	return maxActivityQuiFre;
   }
   
 }

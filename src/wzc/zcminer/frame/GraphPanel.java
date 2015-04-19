@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 
 import javax.swing.JPanel;
@@ -21,9 +23,11 @@ import com.mxgraph.layout.mxParallelEdgeLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxPoint;
+import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
 
-public class GraphPanel extends JPanel{
+public class GraphPanel extends JPanel implements ComponentListener{
 	static JSlider pathSlider;
 	static JSlider activitySlider;
 	static JPanel sliderJPanel;
@@ -74,9 +78,11 @@ public class GraphPanel extends JPanel{
 		sliderBagConstraints.weighty = 1;
 		sliderBagConstraints.fill = GridBagConstraints.BOTH;  */
 		add(sliderJPanel, BorderLayout.EAST);
-		
+		graphComponent.addComponentListener(this);
 		
 	}
+
+	
 	
 	public void paintGraph() {
 		graph.getModel().beginUpdate();
@@ -111,14 +117,14 @@ public class GraphPanel extends JPanel{
 		{
 			graph.getModel().endUpdate();
 		}
-		ZoomtoCenter();
 		ZoomtoFit();
+		ZoomtoCenter();
 	}
 	
 	public void ZoomtoFit() {
 		
 		double newScale = 1;
-		Dimension graphSize = graphComponent.getGraphControl().getSize();
+		mxRectangle graphSize = graph.getView().getGraphBounds();
         Dimension viewPortSize = graphComponent.getViewport().getSize();
 
         int gw = (int) graphSize.getWidth();
@@ -130,21 +136,43 @@ public class GraphPanel extends JPanel{
 
             newScale = Math.min((double) w / gw, (double) h / gh);
         }
-        
-        graphComponent.zoom(newScale);
-        
+        if (newScale != 0){
+        	graphComponent.zoom(newScale);
+        }
 	}
 	
 	public void ZoomtoCenter() {
-	       Dimension graphSize = graphComponent.getGraphControl().getSize();
+	       mxRectangle graphSize = graph.getView().getGraphBounds();
            Dimension viewPortSize = graphComponent.getViewport().getSize();
+           int x = (int)graphSize.getWidth()/2 - viewPortSize.width/2;
+           int y = (int)graphSize.getHeight()/2 - viewPortSize.height/2;
 
-           int x = graphSize.width/2 - viewPortSize.width/2;
-           int y = graphSize.height/2 - viewPortSize.height/2;
-           int w = viewPortSize.width;
-           int h = viewPortSize.height;
+           graph.getView().setTranslate(new mxPoint(-x,-y));
+	}
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		ZoomtoFit();
+		ZoomtoCenter();
+	}
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-           graphComponent.getGraphControl().scrollRectToVisible( new Rectangle( x, y, w, h));
+
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		ZoomtoFit();
+		ZoomtoCenter();
 	}
 	
 		

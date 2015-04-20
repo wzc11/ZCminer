@@ -89,11 +89,11 @@ public class MainFrame {
 		startPanel.setLayout(new BorderLayout());
 
 		JPanel filePanel = new JPanel();
-		filePanel.setLayout(new FlowLayout());
+		filePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20 ));
 		filePanel.add(new JLabel("choose csv file"));
 		filePanel.add(startButton);
 		startPanel.add(filePanel, BorderLayout.CENTER);
-
+		
 		mainFrame.setVisible(true);
 	}
 

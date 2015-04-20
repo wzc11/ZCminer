@@ -105,7 +105,9 @@ public class ImportPanel extends JPanel {
 			myEntries = reader.readAll();
 			String[] headlines = myEntries.remove(0);
 			rowData = myEntries.toArray(new String[0][]);
-			table = new ColumnSelectableJTable(rowData, headlines);
+			String [][] tableData = myEntries.subList(0, 1000).toArray(new String[0][]);
+			
+			table = new ColumnSelectableJTable(tableData, headlines);
 
 			table.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {

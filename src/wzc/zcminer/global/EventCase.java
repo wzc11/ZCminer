@@ -10,6 +10,7 @@ public class EventCase {
 	public EventCase() {
 		// TODO Auto-generated constructor stub
 		startDateString = "";
+		endDateString = "";
 	}
 
 	public void setCase(String caseID) {

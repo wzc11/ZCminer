@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileReader;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -18,6 +20,7 @@ import javax.swing.JScrollPane;
 import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class ImportPanel extends JPanel {
 	static ColumnSelectableJTable table;
@@ -206,6 +209,12 @@ public class ImportPanel extends JPanel {
 						}
 					}
 
+					for (int i = 0; i < MainFrame.graphNet.activityCount; i++)
+						for (int j = 0; j < MainFrame.graphNet.activityCount; j++)
+						{
+							MainFrame.graphNet.activityQueFreSort.add(MainFrame.graphNet.activityQueFre[i][j]);
+						}
+					Collections.sort(MainFrame.graphNet.activityQueFreSort);
 					GraphPanel graphPanel = new GraphPanel();
 					MainFrame.mainFrame.getContentPane().removeAll();
 					MainFrame.mainFrame.setContentPane(graphPanel);

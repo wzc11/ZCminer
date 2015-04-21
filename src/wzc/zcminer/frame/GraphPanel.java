@@ -9,7 +9,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.Arrays;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
@@ -23,11 +25,14 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
+import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 public class GraphPanel extends JPanel implements ComponentListener {
 	static JSlider pathSlider;
 	static JSlider activitySlider;
 	static JPanel sliderJPanel;
+	static JPanel labelPanel;
+	static JPanel controlPanel;
 	mxGraphComponent graphComponent;
 	mxGraph graph;
 	Object parent;
@@ -37,15 +42,23 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 		setLayout(new BorderLayout());
 
+		controlPanel = new JPanel();
+		controlPanel.setLayout(new BorderLayout());
+		
 		sliderJPanel = new JPanel();
 		sliderJPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		labelPanel = new JPanel();
+		labelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
+		labelPanel.add(new JLabel("Path"));
+		labelPanel.add(new JLabel("Activity"));
+		
 		pathSlider = new JSlider(JSlider.VERTICAL);
 		pathSlider.setMinimum(0);
-		int maxActivityQueFre = MainFrame.graphNet.getMaxActivityQueFre();
-		pathSlider.setMaximum(maxActivityQueFre / 10);
-		pathSlider.setValue(maxActivityQueFre / 10);
-		pathSlider.setExtent(maxActivityQueFre / 300);
+		int activityCount = MainFrame.graphNet.activityCount - 1;
+		pathSlider.setMaximum(activityCount * activityCount);
+		pathSlider.setValue(activityCount * activityCount);
 		pathSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if (pathSlider.getValueIsAdjusting() != true) {
@@ -56,11 +69,10 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		sliderJPanel.add(pathSlider);
 
 		activitySlider = new JSlider(JSlider.VERTICAL);
-		int maxActivityFre = MainFrame.graphNet.getMaxActivityFre();
-		activitySlider.setMinimum(maxActivityFre / 50);
-		activitySlider.setMaximum(maxActivityFre / 3);
-		activitySlider.setValue(maxActivityFre / 50);
-		activitySlider.setExtent(maxActivityFre / 100);
+		activitySlider.setMinimum(0);
+		activitySlider.setMaximum(MainFrame.graphNet.activityCount);
+		activitySlider.setValue(0);
+		activitySlider.setExtent(1);
 		activitySlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -71,6 +83,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		});
 		sliderJPanel.add(activitySlider);
 
+		controlPanel.add(labelPanel, BorderLayout.NORTH);
+		controlPanel.add(sliderJPanel, BorderLayout.CENTER);
+		
 		graph = new mxGraph();
 		parent = graph.getDefaultParent();
 		graphComponent = new mxGraphComponent(graph);
@@ -89,7 +104,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		 * 1; sliderBagConstraints.weightx = 0.3; sliderBagConstraints.weighty =
 		 * 1; sliderBagConstraints.fill = GridBagConstraints.BOTH;
 		 */
-		add(sliderJPanel, BorderLayout.EAST);
+		add(controlPanel, BorderLayout.EAST);
 		graphComponent.addComponentListener(this);
 
 	}
@@ -97,6 +112,11 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	public void paintGraph() {
 		graph.getModel().beginUpdate();
 		try {
+			int[] temp = MainFrame.graphNet.activityFre.clone();
+			Arrays.sort(temp);
+			
+			
+			
 			graph.selectAll();
 			graph.removeCells();
 			Object[] v = new Object[MainFrame.graphNet.activityCount];
@@ -104,10 +124,10 @@ public class GraphPanel extends JPanel implements ComponentListener {
 					MainFrame.graphNet.activityNames[0], 400, 400, 50, 20);
 			v[1] = graph.insertVertex(parent, null,
 					MainFrame.graphNet.activityNames[1], 400, 400, 50, 20);
-
+			
 			for (int i = 2; i < MainFrame.graphNet.activityCount; i++)
-				if (MainFrame.graphNet.activityFre[i] > activitySlider
-						.getValue()) {
+				if (MainFrame.graphNet.activityFre[i] >= temp[activitySlider
+						.getValue()]) {
 					v[i] = graph.insertVertex(parent, null,
 							MainFrame.graphNet.activityNames[i], 400, 400, 80,
 							40);
@@ -115,13 +135,13 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 			for (int i = 0; i < MainFrame.graphNet.activityCount; i++)
 				if (i < 2
-						|| MainFrame.graphNet.activityFre[i] > activitySlider
-								.getValue())
+						|| MainFrame.graphNet.activityFre[i] >= temp[activitySlider
+								.getValue()])
 					for (int j = 0; j < MainFrame.graphNet.activityCount; j++)
-						if ((j < 2 || MainFrame.graphNet.activityFre[j] > activitySlider
-								.getValue())
-								&& MainFrame.graphNet.activityQueFre[i][j] > pathSlider
-										.getValue()) {
+						if ((j < 2 || MainFrame.graphNet.activityFre[j] >= temp[activitySlider
+								.getValue()])
+								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
+								get(pathSlider.getValue())) {
 							graph.insertEdge(parent, null,
 									MainFrame.graphNet.activityQueFre[i][j],
 									v[i], v[j]);
@@ -151,7 +171,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 			newScale = Math.min((double) w * 0.9 / gw, (double) h * 0.9 / gh);
 		}
-		if (newScale != 0) {
+		if (newScale != 0 && newScale > 0.2) {
 			graphComponent.zoom(newScale);
 		}
 	}

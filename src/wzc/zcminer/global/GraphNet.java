@@ -1,5 +1,6 @@
 package wzc.zcminer.global;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GraphNet {
@@ -10,10 +11,12 @@ public class GraphNet {
 	public int activityCount;
 	public int maxActivityFre;
 	public int maxActivityQuiFre;
+	public ArrayList<Integer> activityQueFreSort;  
 
 	public GraphNet() {
 		// TODO Auto-generated constructor stub
 		activityIDMap = new HashMap<String, Integer>();
+		activityQueFreSort = new ArrayList<Integer>();
 		activityCount = 2;
 		maxActivityFre = 0;
 		maxActivityQuiFre = 0;

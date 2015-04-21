@@ -73,12 +73,13 @@ public class MainFrame {
 				}
 				fd.showDialog(new JLabel(), "选择");
 				File file = fd.getSelectedFile();
-
-				ImportPanel importPanel = new ImportPanel(file
+				if (file!=null){
+					ImportPanel importPanel = new ImportPanel(file
 						.getAbsolutePath());
-				mainFrame.getContentPane().removeAll();
-				mainFrame.setContentPane(importPanel);
-				mainFrame.setVisible(true);
+					mainFrame.getContentPane().removeAll();
+					mainFrame.setContentPane(importPanel);
+					mainFrame.setVisible(true);
+				}
 
 			}
 		});

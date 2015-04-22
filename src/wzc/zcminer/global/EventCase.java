@@ -18,6 +18,8 @@ public class EventCase {
 		// TODO Auto-generated constructor stub
 		startDateString = "";
 		endDateString = "";
+		startDate = new Date();
+		endDate = new Date();
 	}
 	
 	public long getTime() {

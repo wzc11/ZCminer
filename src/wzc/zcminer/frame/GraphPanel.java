@@ -217,6 +217,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		}
 		ZoomtoFit();
 		ZoomtoCenter();
+		graphComponent.validateGraph();
 	}
 
 	public void ZoomtoFit() {

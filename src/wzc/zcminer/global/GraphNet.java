@@ -3,11 +3,15 @@ package wzc.zcminer.global;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+
 public class GraphNet {
 	HashMap<String, Integer> activityIDMap;
 	public String[] activityNames;
 	public int[][] activityQueFre;
 	public int[] activityFre;
+	public long[] activityTime;
+	public long[][] activityQueTime; 
 	public int activityCount;
 	public int maxActivityFre;
 	public int maxActivityQuiFre;
@@ -54,12 +58,22 @@ public class GraphNet {
 		activityCount++;
 	}
 
+	public void addActivityTime(int id, long time) {
+		activityTime[id] += time;
+	}
+	
+	public void addActivityQueTime(int parent, int children, long time) {
+		activityQueTime[parent][children] += time;
+	}
+	
 	public void setMemory() {
 		activityNames = new String[activityCount];
 		activityQueFre = new int[activityCount][activityCount];
 		activityFre = new int[activityCount];
 		activityNames[0] = "begin";
 		activityNames[1] = "end";
+		activityTime = new long[activityCount];
+		activityQueTime = new long[activityCount][activityCount];
 
 	}
 

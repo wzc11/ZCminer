@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -182,20 +183,26 @@ public class ImportPanel extends JPanel {
 
 					int lastActivityId = -1;
 					String lastCase = "";
+					Date lastDate = new Date();
 					for (int i = 0; i < myEntries.size(); i++) {
 						EventCase eventCase = MainFrame.caseCollection
 								.getCase(i);
 						String activityName = eventCase.getActivity();
 						String caseName = eventCase.getCase();
+						long time = eventCase.getTime();
 						int activityId = MainFrame.graphNet
 								.getActivityId(activityName);
 						MainFrame.graphNet.setActivityName(activityId,
 								activityName);
+						MainFrame.graphNet.addActivityTime(activityId, time);
 						if (caseName.equals(lastCase)) {
 							MainFrame.graphNet.addActivityFre(activityId);
 							MainFrame.graphNet.addActivityQueFre(
 									lastActivityId, activityId);
+							long queTime = (eventCase.getStartDate().getTime()-lastDate.getTime());
+							MainFrame.graphNet.addActivityQueTime(lastActivityId, activityId, queTime);
 							lastActivityId = activityId;
+							lastDate = eventCase.getEndDate();
 						} else {
 							if (lastActivityId != -1) {
 								MainFrame.graphNet.addActivityQueFre(
@@ -205,6 +212,7 @@ public class ImportPanel extends JPanel {
 							}
 							lastCase = caseName;
 							lastActivityId = activityId;
+							lastDate = eventCase.getEndDate();
 							MainFrame.graphNet.addActivityFre(lastActivityId);
 						}
 					}

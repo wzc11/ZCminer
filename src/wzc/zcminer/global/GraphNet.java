@@ -2,6 +2,7 @@ package wzc.zcminer.global;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.LongPredicate;
 
 import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
@@ -12,10 +13,15 @@ public class GraphNet {
 	public int[] activityFre;
 	public long[] activityTime;
 	public long[][] activityQueTime; 
+	public long[] maxActivityTime;
+	public long[][] maxActivityQueTime;
+	public long[] minActivityTime;
+	public long[][] minActivityQueTime;
 	public int activityCount;
 	public int maxActivityFre;
 	public int maxActivityQuiFre;
 	public ArrayList<Integer> activityQueFreSort;  
+	
 
 	public GraphNet() {
 		// TODO Auto-generated constructor stub
@@ -74,9 +80,31 @@ public class GraphNet {
 		activityNames[1] = "end";
 		activityTime = new long[activityCount];
 		activityQueTime = new long[activityCount][activityCount];
+		maxActivityTime = new long[activityCount];
+		maxActivityQueTime = new long[activityCount][activityCount];
+		minActivityTime = new long[activityCount];
+		minActivityQueTime = new long[activityCount][activityCount];
 
 	}
-
+	public void setTime(int id, long time) {
+		if (maxActivityTime[id] < time){
+			 maxActivityTime[id] = time;
+		}
+		if (minActivityTime[id] == 0 || minActivityTime[id] > time)
+		{
+			minActivityTime[id] = time;
+		}	
+	}
+	
+	public void setQueTime(int parent, int children, long time) {
+		if (maxActivityQueTime[parent][children] < time){
+			maxActivityQueTime[parent][children]  = time;
+		}
+		if (minActivityQueTime[parent][children] == 0 || minActivityQueTime[parent][children] > time){
+			minActivityQueTime[parent][children] = time;
+		}
+	}
+	
 	public int getMaxActivityFre() {
 		return maxActivityFre;
 	}

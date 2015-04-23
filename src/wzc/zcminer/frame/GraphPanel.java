@@ -61,7 +61,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		labelPanel.add(new JLabel("Path"));
 		labelPanel.add(new JLabel("Activity"));
 		
-		String[] boxString = {"Absolute Frequence", "Total Duration", "Mean Duration"};
+		String[] boxString = {"Absolute Frequence", "Total Duration", "Mean Duration", "Max Duration"
+				, "Min Duration"};
 		modelType = new JComboBox<String>(boxString);
 		modelType.setSelectedItem("Absolute Frequence");
 		modelType.addItemListener(new ItemListener(){
@@ -149,8 +150,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 					
 					String value = MainFrame.graphNet.activityNames[i] + "\n"+
 					MainFrame.graphNet.activityFre[i];
-					if (modelType.getSelectedIndex() == 1)
-					{
+					
+					switch (modelType.getSelectedIndex()) {
+					case 1:
 						if (MainFrame.graphNet.activityTime[i] != 0)
 						{
 							value = MainFrame.graphNet.activityNames[i] + "\n"+
@@ -158,8 +160,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 						}else{
 							value = MainFrame.graphNet.activityNames[i];
 						}
-					} else if (modelType.getSelectedIndex() == 2)
-					{
+						break;
+					case 2:
 						if (MainFrame.graphNet.activityTime[i] != 0)
 						{
 							value = MainFrame.graphNet.activityNames[i] + "\n"+
@@ -168,8 +170,31 @@ public class GraphPanel extends JPanel implements ComponentListener {
 						}else{
 							value = MainFrame.graphNet.activityNames[i];
 						}
+						break;
+					case 3:
+						if (MainFrame.graphNet.maxActivityTime[i] != 0)
+						{
+							value = MainFrame.graphNet.activityNames[i] + "\n"+
+									(MainFrame.graphNet.maxActivityTime[i] / 
+											(1000*60*60)) + "hours";
+						}else{
+							value = MainFrame.graphNet.activityNames[i];
+						}
+						break;
+					case 4:
+						if (MainFrame.graphNet.minActivityTime[i] != 0)
+						{
+							value = MainFrame.graphNet.activityNames[i] + "\n"+
+									(MainFrame.graphNet.minActivityTime[i] / 
+											(1000*60)) + "mins";
+						}else{
+							value = MainFrame.graphNet.activityNames[i];
+						}
+						break;
+					default:
+						break;
 					}
-					
+							
 					v[i] = graph.insertVertex(parent, null,
 							value, 400, 400, 80,
 							40);
@@ -186,7 +211,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 								get(pathSlider.getValue())) {
 							
 							String value = MainFrame.graphNet.activityQueFre[i][j]+"";
-							if (modelType.getSelectedIndex() == 1){
+							
+							switch (modelType.getSelectedIndex()) {
+							case 1:
 								if (MainFrame.graphNet.activityQueTime[i][j] != 0)
 								{
 									value =  (MainFrame.graphNet.activityQueTime[i][j] / (1000*60*60) )+" hours";
@@ -194,8 +221,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 								{
 									value = "";
 								}
-							}else if (modelType.getSelectedIndex() == 2)
-							{
+								break;
+							case 2:
 								if (MainFrame.graphNet.activityQueTime[i][j] != 0)
 								{
 									value =  (MainFrame.graphNet.activityQueTime[i][j] /
@@ -204,7 +231,29 @@ public class GraphPanel extends JPanel implements ComponentListener {
 								{
 									value = "";
 								}
+								break;
+							case 3:
+								if (MainFrame.graphNet.maxActivityQueTime[i][j] != 0)
+								{
+									value =  (MainFrame.graphNet.maxActivityQueTime[i][j] / (1000*60*60) )+" hours";
+								} else
+								{
+									value = "";
+								}
+								break;
+							case 4:
+								if (MainFrame.graphNet.minActivityQueTime[i][j] != 0)
+								{
+									value =  (MainFrame.graphNet.minActivityQueTime[i][j] / (1000*60) )+" mins";
+								} else
+								{
+									value = "";
+								}
+								break;
+							default:
+								break;
 							}
+							
 							graph.insertEdge(parent, null,
 									value,
 									v[i], v[j]);

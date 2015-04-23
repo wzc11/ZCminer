@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
+import sun.applet.Main;
 import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
@@ -195,12 +196,16 @@ public class ImportPanel extends JPanel {
 						MainFrame.graphNet.setActivityName(activityId,
 								activityName);
 						MainFrame.graphNet.addActivityTime(activityId, time);
+						MainFrame.graphNet.setTime(activityId, time);
+						
 						if (caseName.equals(lastCase)) {
 							MainFrame.graphNet.addActivityFre(activityId);
 							MainFrame.graphNet.addActivityQueFre(
 									lastActivityId, activityId);
 							long queTime = (eventCase.getStartDate().getTime()-lastDate.getTime());
 							MainFrame.graphNet.addActivityQueTime(lastActivityId, activityId, queTime);
+							MainFrame.graphNet.setQueTime(lastActivityId, activityId, queTime);
+							
 							lastActivityId = activityId;
 							lastDate = eventCase.getEndDate();
 						} else {

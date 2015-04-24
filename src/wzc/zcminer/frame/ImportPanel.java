@@ -214,6 +214,9 @@ public class ImportPanel extends JPanel {
 										lastActivityId, 1);
 								MainFrame.graphNet.addActivityQueFre(0,
 										activityId);
+							} else{
+								MainFrame.graphNet.addActivityQueFre(0,
+										activityId);
 							}
 							lastCase = caseName;
 							lastActivityId = activityId;
@@ -221,6 +224,8 @@ public class ImportPanel extends JPanel {
 							MainFrame.graphNet.addActivityFre(lastActivityId);
 						}
 					}
+					MainFrame.graphNet.addActivityQueFre(
+							lastActivityId, 1);
 
 					for (int i = 0; i < MainFrame.graphNet.activityCount; i++)
 						for (int j = 0; j < MainFrame.graphNet.activityCount; j++)

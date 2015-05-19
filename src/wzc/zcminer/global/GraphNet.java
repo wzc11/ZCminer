@@ -20,6 +20,8 @@ public class GraphNet {
 	public int activityCount;
 	public int maxActivityFre;
 	public int maxActivityQuiFre;
+	public long beginTime;
+	public long endTime;
 	public ArrayList<Integer> activityQueFreSort;  
 	
 
@@ -30,6 +32,8 @@ public class GraphNet {
 		activityCount = 2;
 		maxActivityFre = 0;
 		maxActivityQuiFre = 0;
+		beginTime = 0;
+		endTime = 0;
 	}
 
 	public boolean activityExist(String activityName) {
@@ -105,6 +109,18 @@ public class GraphNet {
 		}
 	}
 	
+	public void setBeginTime(long time){
+		if (time < beginTime || beginTime == 0 ){
+			beginTime = time;
+		}
+	}
+	
+	public void setEndTime(long time){
+		if (time > endTime){
+			endTime = time;
+		}
+	}
+	
 	public int getMaxActivityFre() {
 		return maxActivityFre;
 	}
@@ -112,5 +128,7 @@ public class GraphNet {
 	public int getMaxActivityQueFre() {
 		return maxActivityQuiFre;
 	}
+	
+	
 
 }

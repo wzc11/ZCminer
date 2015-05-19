@@ -8,12 +8,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,7 +42,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	static JComboBox<String> modelType;
 	static JPanel sliderJPanel;
 	static JPanel labelPanel;
+	static JPanel centerPanel;
 	static JPanel controlPanel;
+	static JButton animationButton;
 	mxGraphComponent graphComponent;
 	mxGraph graph;
 	Object parent;
@@ -51,6 +56,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new BorderLayout());
+		
+		centerPanel = new JPanel(new BorderLayout());
 		
 		sliderJPanel = new JPanel();
 		sliderJPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -103,9 +110,19 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		});
 		sliderJPanel.add(activitySlider);
 
+		centerPanel.add(sliderJPanel,BorderLayout.CENTER);
+		
+		animationButton = new JButton("播放动画");
+		animationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		centerPanel.add(animationButton,BorderLayout.SOUTH);
+		
 		
 		controlPanel.add(labelPanel, BorderLayout.NORTH);
-		controlPanel.add(sliderJPanel, BorderLayout.CENTER);
+		controlPanel.add(centerPanel, BorderLayout.CENTER);
 		controlPanel.add(modelType, BorderLayout.SOUTH);
 		
 		graph = new mxGraph();

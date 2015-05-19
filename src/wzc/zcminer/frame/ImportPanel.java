@@ -197,6 +197,8 @@ public class ImportPanel extends JPanel {
 								activityName);
 						MainFrame.graphNet.addActivityTime(activityId, time);
 						MainFrame.graphNet.setTime(activityId, time);
+						MainFrame.graphNet.setBeginTime(eventCase.getStartDate().getTime());
+						MainFrame.graphNet.setEndTime(eventCase.getEndDate().getTime());
 						
 						if (caseName.equals(lastCase)) {
 							MainFrame.graphNet.addActivityFre(activityId);
@@ -227,6 +229,9 @@ public class ImportPanel extends JPanel {
 					MainFrame.graphNet.addActivityQueFre(
 							lastActivityId, 1);
 
+					MainFrame.graphNet.beginTime /= 1000*60*60;
+					MainFrame.graphNet.endTime /= 1000*60*60;
+					
 					for (int i = 0; i < MainFrame.graphNet.activityCount; i++)
 						for (int j = 0; j < MainFrame.graphNet.activityCount; j++)
 						{

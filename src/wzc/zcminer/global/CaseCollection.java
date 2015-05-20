@@ -14,7 +14,11 @@ public class CaseCollection {
 	public void addCase(EventCase c) {
 		cases.add(c);
 	}
-
+	
+	public int getSize(){
+		return cases.size();
+	}
+	
 	public EventCase getCase(int pos) {
 		return cases.get(pos);
 	}

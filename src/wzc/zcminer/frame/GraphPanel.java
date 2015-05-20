@@ -15,6 +15,9 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +27,8 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import wzc.zcminer.global.EventCase;
 
 import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 
@@ -48,7 +53,10 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	mxGraphComponent graphComponent;
 	mxGraph graph;
 	Object parent;
-
+	Timer timer;
+	int timeFlag;
+	long currentTime;
+	Object[]  v;
 	public GraphPanel() {
 		// TODO Auto-generated constructor stub
 
@@ -112,10 +120,17 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 		centerPanel.add(sliderJPanel,BorderLayout.CENTER);
 		
+		timeFlag = 0;
 		animationButton = new JButton("播放动画");
 		animationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (timeFlag == 0){
+					timeFlag = 1;
+					paintAnimation();
+				} else{
+					timeFlag = 0;
+					timer.cancel();
+				}
 			}
 		});
 		centerPanel.add(animationButton,BorderLayout.SOUTH);
@@ -147,7 +162,62 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		graphComponent.addComponentListener(this);
 
 	}
-
+	
+	public void paintAnimation(){
+		timer = new Timer();  
+		currentTime = MainFrame.graphNet.beginTime;
+		System.out.println(MainFrame.caseCollection.getSize());
+        timer.schedule(new TimerTask() {  
+            public void run() {  
+            	currentTime++;
+            	System.out.println(currentTime);
+            	if (currentTime > MainFrame.graphNet.endTime){
+            		cancel();
+            	}
+            	
+            	graph.getModel().beginUpdate();
+        		try
+        		{
+	            	int lastActivityId = -1;
+	            	String lastCase = "";
+	            	Date lastDate = new Date();
+	            	int[] temp = MainFrame.graphNet.activityFre.clone();
+	    			Arrays.sort(temp);
+	    			
+	            	for (int i = 0 ; i < MainFrame.caseCollection.getSize(); i++){
+	            		EventCase eventCase = MainFrame.caseCollection
+								.getCase(i);
+	            		String caseName = eventCase.getCase();
+	            		String activityName = eventCase.getActivity();
+	            		int activityId = MainFrame.graphNet
+								.getActivityId(activityName);
+	        			if (MainFrame.graphNet.activityFre[activityId] < temp[activitySlider
+	        			                      						.getValue()]) {
+	        				continue;
+	        			}
+	            		if (eventCase.getStartDate().getTime()/ (1000*60*60) <= currentTime && 
+	            				eventCase.getEndDate().getTime()/ (1000*60*60) >= currentTime){
+	            			double x = graph.getView().getState(v[activityId]).getCenterX();
+	            			double y = graph.getView().getState(v[activityId]).getCenterY();
+	            			graph.insertVertex(parent, null, "", x, y, 10, 10,"shape=ellipse;fillColor=yellow");
+	            		}
+	            		
+	            		if (caseName.equals(lastCase)){
+	            			
+	            		}
+	            		
+	            		lastCase = caseName;
+	            	}
+	            	
+	            }  
+        		finally
+        		{	
+        			graph.getModel().endUpdate();
+        		}
+        		graphComponent.refresh();
+            }
+        }, 1000);
+	}
 	public void paintGraph() {
 		graph.getModel().beginUpdate();
 		try {
@@ -156,7 +226,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			
 			graph.selectAll();
 			graph.removeCells();
-			Object[] v = new Object[MainFrame.graphNet.activityCount];
+			v = new Object[MainFrame.graphNet.activityCount];
 			v[0] = graph.insertVertex(parent, null,
 					MainFrame.graphNet.activityNames[0], 400, 400, 50, 20);
 			v[1] = graph.insertVertex(parent, null,

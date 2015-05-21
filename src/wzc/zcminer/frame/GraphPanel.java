@@ -29,13 +29,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import wzc.zcminer.global.EventCase;
-
 import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 
 import com.mxgraph.layout.mxParallelEdgeLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
@@ -126,9 +126,12 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			public void actionPerformed(ActionEvent e) {
 				if (timeFlag == 0){
 					timeFlag = 1;
+					animationButton.setText("结束播放");
 					paintAnimation();
 				} else{
+					animationButton.setText("播放动画");
 					timeFlag = 0;
+					paintGraph();
 					timer.cancel();
 				}
 			}
@@ -167,7 +170,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		timer = new Timer();  
 		currentTime = MainFrame.graphNet.beginTime;
 		System.out.println(MainFrame.caseCollection.getSize());
-        timer.schedule(new TimerTask() {  
+		
+        timer.scheduleAtFixedRate(new TimerTask() {  
             public void run() {  
             	currentTime++;
             	System.out.println(currentTime);
@@ -175,50 +179,77 @@ public class GraphPanel extends JPanel implements ComponentListener {
             		cancel();
             	}
             	
-            	graph.getModel().beginUpdate();
-        		try
-        		{
-	            	int lastActivityId = -1;
-	            	String lastCase = "";
-	            	Date lastDate = new Date();
-	            	int[] temp = MainFrame.graphNet.activityFre.clone();
-	    			Arrays.sort(temp);
-	    			
-	            	for (int i = 0 ; i < MainFrame.caseCollection.getSize(); i++){
-	            		EventCase eventCase = MainFrame.caseCollection
-								.getCase(i);
-	            		String caseName = eventCase.getCase();
-	            		String activityName = eventCase.getActivity();
-	            		int activityId = MainFrame.graphNet
-								.getActivityId(activityName);
-	        			if (MainFrame.graphNet.activityFre[activityId] < temp[activitySlider
-	        			                      						.getValue()]) {
-	        				continue;
-	        			}
-	            		if (eventCase.getStartDate().getTime()/ (1000*60*60) <= currentTime && 
-	            				eventCase.getEndDate().getTime()/ (1000*60*60) >= currentTime){
-	            			double x = graph.getView().getState(v[activityId]).getCenterX();
-	            			double y = graph.getView().getState(v[activityId]).getCenterY();
-	            			graph.insertVertex(parent, null, "", x, y, 10, 10,"shape=ellipse;fillColor=yellow");
-	            		}
-	            		
-	            		if (caseName.equals(lastCase)){
-	            			
-	            		}
-	            		
-	            		lastCase = caseName;
-	            	}
+            	int[] activityEvent = new int[MainFrame.graphNet.activityCount];
+            	int[][] activityEventEdge = new int[MainFrame.graphNet.activityCount][MainFrame.graphNet.activityCount];
+            	
+            	int lastActivityId = -1;
+            	String lastCase = "";
+            	Date lastDate = new Date();
+            	int[] temp = MainFrame.graphNet.activityFre.clone();
+    			Arrays.sort(temp);
+    			
+            	for (int i = 0 ; i < MainFrame.caseCollection.getSize(); i++){
+            		
+            		EventCase eventCase = MainFrame.caseCollection
+							.getCase(i);
+            		String caseName = eventCase.getCase();
+            		String activityName = eventCase.getActivity();
+            		int activityId = MainFrame.graphNet
+							.getActivityId(activityName);
+        			if (MainFrame.graphNet.activityFre[activityId] < temp[activitySlider
+        			                      						.getValue()]) {
+        				continue;
+        			}
+            		if (eventCase.getStartDate().getTime()/ (1000*60*60) <= currentTime && 
+            				eventCase.getEndDate().getTime()/ (1000*60*60) >= currentTime){
+            			//graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, "yellow", new Object[]{v[activityId]}); 
+            			activityEvent[activityId]++;
+            		}
+            		
+            		if (caseName.equals(lastCase)){
+            			if (eventCase.getStartDate().getTime()/ (1000*60*60) >= currentTime && 
+                				lastDate.getTime()/ (1000*60*60) <= currentTime){
+            				activityEventEdge[lastActivityId][activityId]++;
+            			}
+            		}
+            		
+            		lastCase = caseName;
+            		lastDate = eventCase.getEndDate();
+            		lastActivityId = activityId;
+            	}
+            	
+            	for (int i = 2; i< MainFrame.graphNet.activityCount; i++){
+            		if (activityEvent[i] > 0){
+            			graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, "yellow", new Object[]{v[i]}); 
+            		} else{
+            			graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, "#BFEFFF",new Object[]{v[i]}); 
+            		}
+            	}
 	            	
-	            }  
-        		finally
-        		{	
-        			graph.getModel().endUpdate();
-        		}
+            	for (int i = 2; i< MainFrame.graphNet.activityCount;i++)
+            	if (MainFrame.graphNet.activityFre[i] >= temp[activitySlider
+     			               								.getValue()]){
+            		for (int j = 2; j< MainFrame.graphNet.activityCount; j++){
+            			if ( MainFrame.graphNet.activityFre[j] >= temp[activitySlider
+            			               								.getValue()]
+            			               								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
+            			               								get(pathSlider.getValue()) ){ 
+            				if(   activityEventEdge[i][j] > 0 ){
+            					graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, "red",graph.getEdgesBetween(v[i], v[j]));
+            			
+            				} else{
+            					graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, "#515151",graph.getEdgesBetween(v[i], v[j]));
+            				}
+            			}
+            		}
+            	}
+            	
+            	
         		graphComponent.refresh();
             }
-        }, 1000);
+        }, 0, 500);
 	}
-	public void paintGraph() {
+	public void paintGraph() { 
 		graph.getModel().beginUpdate();
 		try {
 			int[] temp = MainFrame.graphNet.activityFre.clone();
@@ -228,9 +259,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			graph.removeCells();
 			v = new Object[MainFrame.graphNet.activityCount];
 			v[0] = graph.insertVertex(parent, null,
-					MainFrame.graphNet.activityNames[0], 400, 400, 50, 20);
+					MainFrame.graphNet.activityNames[0], 400, 400, 50, 20,"fillColor=#BFEFFF");
 			v[1] = graph.insertVertex(parent, null,
-					MainFrame.graphNet.activityNames[1], 400, 400, 50, 20);
+					MainFrame.graphNet.activityNames[1], 400, 400, 50, 20,"fillColor=#BFEFFF");
 			for (int i = 2; i < MainFrame.graphNet.activityCount; i++)
 				if (MainFrame.graphNet.activityFre[i] >= temp[activitySlider
 						.getValue()]) {
@@ -284,7 +315,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 							
 					v[i] = graph.insertVertex(parent, null,
 							value, 400, 400, 80,
-							40);
+							40, "fillColor=#BFEFFF");
 				}
 
 			for (int i = 0; i < MainFrame.graphNet.activityCount; i++)
@@ -343,7 +374,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 							
 							graph.insertEdge(parent, null,
 									value,
-									v[i], v[j]);
+									v[i], v[j], "strokeColor=#515151");
 						}
 
 			new mxHierarchicalLayout(graph).execute(graph.getDefaultParent());

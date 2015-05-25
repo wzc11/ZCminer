@@ -1,6 +1,7 @@
 package wzc.zcminer.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -131,8 +132,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				} else{
 					animationButton.setText("播放动画");
 					timeFlag = 0;
-					paintGraph();
 					timer.cancel();
+					paintGraph();
+					
 				}
 			}
 		});
@@ -165,16 +167,35 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		graphComponent.addComponentListener(this);
 
 	}
+    public String toHexEncoding(Color color) {
+        String R, G, B;
+        StringBuffer sb = new StringBuffer();
+ 
+        R = Integer.toHexString(color.getRed());
+        G = Integer.toHexString(color.getGreen());
+        B = Integer.toHexString(color.getBlue());
+ 
+        R = R.length() == 1 ? "0" + R : R;
+        G = G.length() == 1 ? "0" + G : G;
+        B = B.length() == 1 ? "0" + B : B;
+ 
+        sb.append("0x");
+        sb.append(R);
+        sb.append(G);
+        sb.append(B);
+ 
+        return sb.toString();
+    }
+
+	
 	
 	public void paintAnimation(){
 		timer = new Timer();  
 		currentTime = MainFrame.graphNet.beginTime;
-		System.out.println(MainFrame.caseCollection.getSize());
 		
         timer.scheduleAtFixedRate(new TimerTask() {  
             public void run() {  
             	currentTime++;
-            	System.out.println(currentTime);
             	if (currentTime > MainFrame.graphNet.endTime){
             		cancel();
             	}
@@ -220,7 +241,14 @@ public class GraphPanel extends JPanel implements ComponentListener {
             	
             	for (int i = 2; i< MainFrame.graphNet.activityCount; i++){
             		if (activityEvent[i] > 0){
-            			graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, "yellow", new Object[]{v[i]}); 
+            			int g = activityEvent[i];
+            		//	System.out.println(g);
+            			if (g > 100){
+            				g = 0; 
+            			} else{
+            				g = 200-g*2;
+            			}
+            			graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, toHexEncoding(new Color(255,g,0)), new Object[]{v[i]}); 
             		} else{
             			graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, "#BFEFFF",new Object[]{v[i]}); 
             		}
@@ -235,7 +263,13 @@ public class GraphPanel extends JPanel implements ComponentListener {
             			               								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
             			               								get(pathSlider.getValue()) ){ 
             				if(   activityEventEdge[i][j] > 0 ){
-            					graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, "red",graph.getEdgesBetween(v[i], v[j]));
+            					int g = activityEventEdge[i][j];
+                    			if (g > 40){
+                    				g = 0; 
+                    			} else{
+                    				g = 200-g*5;
+                    			}
+            					graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, toHexEncoding(new Color(255,g,0)),graph.getEdgesBetween(v[i], v[j]));
             			
             				} else{
             					graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, "#515151",graph.getEdgesBetween(v[i], v[j]));

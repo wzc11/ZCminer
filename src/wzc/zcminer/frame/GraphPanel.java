@@ -45,9 +45,11 @@ import com.sun.media.jfxmedia.events.NewFrameEvent;
 public class GraphPanel extends JPanel implements ComponentListener {
 	static JSlider pathSlider;
 	static JSlider activitySlider;
+	static JSlider animationSlider;
 	static JComboBox<String> modelType;
 	static JPanel sliderJPanel;
 	static JPanel labelPanel;
+	static JPanel headPanel;
 	static JPanel centerPanel;
 	static JPanel controlPanel;
 	static JButton animationButton;
@@ -56,6 +58,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	Object parent;
 	Timer timer;
 	int timeFlag;
+	long speed;
 	long currentTime;
 	Object[]  v;
 	public GraphPanel() {
@@ -65,6 +68,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new BorderLayout());
+		
+		headPanel = new JPanel();
+		headPanel.setLayout(new BorderLayout());
 		
 		centerPanel = new JPanel(new BorderLayout());
 		
@@ -119,7 +125,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		});
 		sliderJPanel.add(activitySlider);
 
-		centerPanel.add(sliderJPanel,BorderLayout.CENTER);
+		headPanel.add(labelPanel, BorderLayout.NORTH);
+		headPanel.add(sliderJPanel, BorderLayout.CENTER);
+	//	centerPanel.add(sliderJPanel,BorderLayout.CENTER);
 		
 		timeFlag = 0;
 		animationButton = new JButton("播放动画");
@@ -128,9 +136,13 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				if (timeFlag == 0){
 					timeFlag = 1;
 					animationButton.setText("结束播放");
+					modelType.setEnabled(false);
+					animationSlider.setEnabled(true);
 					paintAnimation();
 				} else{
 					animationButton.setText("播放动画");
+					modelType.setEnabled(true);
+					animationSlider.setEnabled(false);
 					timeFlag = 0;
 					timer.cancel();
 					paintGraph();
@@ -138,10 +150,28 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				}
 			}
 		});
-		centerPanel.add(animationButton,BorderLayout.SOUTH);
+		centerPanel.add(animationButton,BorderLayout.NORTH);
 		
 		
-		controlPanel.add(labelPanel, BorderLayout.NORTH);
+		speed = 1;
+		animationSlider = new JSlider();
+		animationSlider.setMinimum(1);
+		long period =MainFrame.graphNet.endTime- MainFrame.graphNet.beginTime;
+		animationSlider.setMaximum((int) (period / 50));
+		animationSlider.setValue(1);
+		animationSlider.setExtent(1);
+		animationSlider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				if (animationSlider.getValueIsAdjusting() != true) {
+					speed = animationSlider.getValue();
+				}
+			}
+		});
+		centerPanel.add(animationSlider, BorderLayout.CENTER);
+		
+		
+		controlPanel.add(headPanel, BorderLayout.NORTH);
 		controlPanel.add(centerPanel, BorderLayout.CENTER);
 		controlPanel.add(modelType, BorderLayout.SOUTH);
 		
@@ -195,11 +225,10 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		
         timer.scheduleAtFixedRate(new TimerTask() {  
             public void run() {  
-            	currentTime++;
+            	currentTime=currentTime + speed;
             	if (currentTime > MainFrame.graphNet.endTime){
             		cancel();
             	}
-            	
             	int[] activityEvent = new int[MainFrame.graphNet.activityCount];
             	int[][] activityEventEdge = new int[MainFrame.graphNet.activityCount][MainFrame.graphNet.activityCount];
             	
@@ -240,6 +269,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
             	}
             	
             	for (int i = 2; i< MainFrame.graphNet.activityCount; i++){
+            		graph.cellLabelChanged(v[i], MainFrame.graphNet.activityNames[i] + "\n"+activityEvent[i], false);
             		if (activityEvent[i] > 0){
             			int g = activityEvent[i];
             		//	System.out.println(g);
@@ -254,14 +284,18 @@ public class GraphPanel extends JPanel implements ComponentListener {
             		}
             	}
 	            	
-            	for (int i = 2; i< MainFrame.graphNet.activityCount;i++)
+            	for (int i = 0; i< MainFrame.graphNet.activityCount;i++)
             	if (MainFrame.graphNet.activityFre[i] >= temp[activitySlider
      			               								.getValue()]){
-            		for (int j = 2; j< MainFrame.graphNet.activityCount; j++){
+            		for (int j = 0; j< MainFrame.graphNet.activityCount; j++){
             			if ( MainFrame.graphNet.activityFre[j] >= temp[activitySlider
             			               								.getValue()]
             			               								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
             			               								get(pathSlider.getValue()) ){ 
+            				for (Object edge : graph.getEdgesBetween(v[i], v[j])){
+            					graph.cellLabelChanged(edge, activityEventEdge[i][j], false);
+            				}
+            				
             				if(   activityEventEdge[i][j] > 0 ){
             					int g = activityEventEdge[i][j];
                     			if (g > 40){

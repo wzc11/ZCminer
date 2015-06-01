@@ -17,12 +17,11 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
-import sun.applet.Main;
 import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class ImportPanel extends JPanel {
 	static ColumnSelectableJTable table;
@@ -34,6 +33,7 @@ public class ImportPanel extends JPanel {
 	static JRadioButton resourseButton;
 	static JRadioButton otherButton;
 	static ButtonGroup buttonGroup;
+	static JTextField timeText;
 	final static int MAXHEADINDEX = 20;
 	int[] headIndex;
 	String[][] rowData;
@@ -75,6 +75,9 @@ public class ImportPanel extends JPanel {
 					headIndex[table.column] = 4;
 				}
 			});
+			
+			timeText = new JTextField();
+			timeText.setText("dd.MM.yy HH:mm");
 
 			resourseButton = new JRadioButton("resourse");
 			resourseButton.addActionListener(new ActionListener() {
@@ -94,6 +97,7 @@ public class ImportPanel extends JPanel {
 			radioPanel.add(caseButton);
 			radioPanel.add(activityButton);
 			radioPanel.add(timeButton);
+			radioPanel.add(timeText);
 			radioPanel.add(resourseButton);
 			radioPanel.add(otherButton);
 
@@ -168,7 +172,7 @@ public class ImportPanel extends JPanel {
 								}
 								break;
 							case 4:
-								eventCase.setDate(rowData[i][j]);
+								eventCase.setDate(rowData[i][j], timeText.getText());
 								break;
 							case 5:
 								eventCase.setResourse(rowData[i][j]);

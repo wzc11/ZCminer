@@ -72,8 +72,8 @@ public class EventCase {
 		return resourseString;
 	}
 
-	public void setDate(String dateString) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");  
+	public void setDate(String dateString, String timeString) {
+		SimpleDateFormat sdf = new SimpleDateFormat(timeString);  
 		if (startDateString.equals("")) {
 			this.startDateString = dateString;
 			try {

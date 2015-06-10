@@ -23,7 +23,7 @@ public class MainFrame {
 	public MainFrame() {
 		// TODO Auto-generated constructor stub
 		mainFrame = new JFrame();
-		mainFrame.setTitle("THSS MINER");
+		mainFrame.setTitle("THUMiner");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setSize(WIDTH, HEIGHT);
 

@@ -1,7 +1,7 @@
 package wzc.zcminer.frame;
 
 import javax.swing.JTable;
-
+//列选中表
 public class ColumnSelectableJTable extends JTable {
 	public int column;
 

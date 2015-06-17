@@ -41,11 +41,14 @@ import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
 import com.sun.media.jfxmedia.events.NewFrameEvent;
-
+//主面板
 public class GraphPanel extends JPanel implements ComponentListener {
-	static JSlider pathSlider;
+	//参数滑块
+	static JSlider pathSlider;   
 	static JSlider activitySlider;
+	//动画速度滑块
 	static JSlider animationSlider;
+	//类型选择
 	static JComboBox<String> modelType;
 	static JPanel sliderJPanel;
 	static JPanel labelPanel;
@@ -54,6 +57,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	static JPanel animationPanel;
 	static JPanel controlPanel;
 	static JButton animationButton;
+	//jgraph面板
 	mxGraphComponent graphComponent;
 	mxGraph graph;
 	Object parent;
@@ -61,6 +65,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	int timeFlag;
 	long speed;
 	long currentTime;
+	//图像节点
 	Object[]  v;
 	public GraphPanel() {
 		// TODO Auto-generated constructor stub
@@ -86,7 +91,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		
 		animationPanel = new JPanel(new FlowLayout());
 		
-		
+		//选择模块初始
 		String[] boxString = {"Absolute Frequence", "Total Duration", "Mean Duration", "Max Duration"
 				, "Min Duration", "Case Frequence", "Max Repetition"};
 		modelType = new JComboBox<String>(boxString);
@@ -99,7 +104,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			}
 		});
 
-		
+		//路径参数滑块
 		pathSlider = new JSlider(JSlider.VERTICAL);
 		pathSlider.setMinimum(0);
 		int activityCount = MainFrame.graphNet.activityCount - 1;
@@ -113,7 +118,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			}
 		});
 		sliderJPanel.add(pathSlider);
-
+		//活动参数滑块
 		activitySlider = new JSlider(JSlider.VERTICAL);
 		activitySlider.setMinimum(0);
 		activitySlider.setMaximum(MainFrame.graphNet.activityCount);
@@ -132,7 +137,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		headPanel.add(labelPanel, BorderLayout.NORTH);
 		headPanel.add(sliderJPanel, BorderLayout.CENTER);
 	//	centerPanel.add(sliderJPanel,BorderLayout.CENTER);
-		
+		//动画设置
 		speed = 1;
 		animationSlider = new JSlider();
 		animationSlider.setMinimum(1);
@@ -174,7 +179,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				}
 			}
 		});
-		
+		//面板布局
 		animationPanel.add(new JLabel("播放速度"));
 		animationPanel.add(animationSlider);
 		centerPanel.add(animationButton,BorderLayout.NORTH);
@@ -208,6 +213,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		graphComponent.addComponentListener(this);
 
 	}
+	//rgb转16进制
     public String toHexEncoding(Color color) {
         String R, G, B;
         StringBuffer sb = new StringBuffer();
@@ -229,7 +235,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
     }
 
 	
-	
+	//动画模拟函数
 	public void paintAnimation(){
 		timer = new Timer();  
 		currentTime = MainFrame.graphNet.beginTime;
@@ -338,6 +344,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
             }
         }, 0, 500);
 	}
+	
+	//画图函数
 	public void paintGraph() { 
 		graph.getModel().beginUpdate();
 		try {
@@ -489,6 +497,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		graphComponent.validateGraph();
 	}
 
+	//放缩
 	public void ZoomtoFit() {
 
 		double newScale = 1;
@@ -508,7 +517,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 			graphComponent.zoom(newScale);
 		}
 	}
-
+	
+	//居中
 	public void ZoomtoCenter() {
 		mxRectangle graphSize = graph.getView().getGraphBounds();
 		Dimension viewPortSize = graphComponent.getViewport().getSize();

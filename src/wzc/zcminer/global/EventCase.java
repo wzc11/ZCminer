@@ -4,8 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+//case 类
 public class EventCase {
+	//case属性
 	String caseID;
 	String activity;
 	String startDateString;
@@ -21,7 +22,7 @@ public class EventCase {
 		startDate = new Date();
 		endDate = new Date();
 	}
-	
+	//活动时长
 	public long getTime() {
 		long hours = 0;
 		
@@ -71,7 +72,7 @@ public class EventCase {
 	public String getResourse() {
 		return resourseString;
 	}
-
+	//设置时间，考虑单个或多个时间的情况
 	public void setDate(String dateString, String timeString) {
 		SimpleDateFormat sdf = new SimpleDateFormat(timeString);  
 		if (startDateString.equals("")) {

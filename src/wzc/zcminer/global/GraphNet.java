@@ -5,26 +5,26 @@ import java.util.HashMap;
 import java.util.function.LongPredicate;
 
 import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
-
+//图完整信息类
 public class GraphNet {
 	HashMap<String, Integer> activityIDMap;
 	public String[] activityNames;
-	public int[][] activityQueFre;
+	public int[][] activityQueFre; //边频率
 	public int[] activityFre;
-	public int[] activityCaseFre;
-	public int[][] activityCaseQueFre;
-	public int[] maxActivityRep;
-	public long[] activityTime;
+	public int[] activityCaseFre; //case频率
+	public int[][] activityCaseQueFre; //边的case频率
+	public int[] maxActivityRep;  //最大反复
+	public long[] activityTime;    //活动时间
 	public long[][] activityQueTime; 
-	public long[] maxActivityTime;
+	public long[] maxActivityTime;  //最大活动时间
 	public long[][] maxActivityQueTime;
 	public long[] minActivityTime;
 	public long[][] minActivityQueTime;
-	public int activityCount;
+	public int activityCount;   //活动数
 	public int maxActivityFre;
 	public int maxActivityQuiFre;
-	public long beginTime;
-	public long endTime;
+	public long beginTime;   //整个图的开始时间
+	public long endTime; 	//整个图的结束时间
 	public ArrayList<Integer> activityQueFreSort;  
 	
 
@@ -39,11 +39,14 @@ public class GraphNet {
 		endTime = 0;
 	}
 
+	//hash判断活动数
 	public boolean activityExist(String activityName) {
 		return activityIDMap.containsKey(activityName);
 
 	}
 
+	
+	//各类活动操作
 	public void addActivityFre(int pos) {
 		activityFre[pos]++;
 		if (activityFre[pos] > maxActivityFre) {
@@ -79,6 +82,7 @@ public class GraphNet {
 		activityQueTime[parent][children] += time;
 	}
 	
+	//分配动态内存
 	public void setMemory() {
 		activityNames = new String[activityCount];
 		activityQueFre = new int[activityCount][activityCount];

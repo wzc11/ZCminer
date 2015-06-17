@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileFilter;
 
 import wzc.zcminer.global.CaseCollection;
 import wzc.zcminer.global.GraphNet;
-
+//主框架
 public class MainFrame {
 	static final int WIDTH = 1000;
 	static final int HEIGHT = 600;
@@ -32,7 +32,7 @@ public class MainFrame {
 		mainFrame.setContentPane(startPanel);
 
 		JButton startButton = new JButton("import your data");
-
+		//导入数据文件
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fd = new JFileChooser();
@@ -48,7 +48,7 @@ public class MainFrame {
 						return "所有文件(*.*)";
 					}
 				});
-
+				//文件操作
 				for (final String[] fileEName : fileENames) {
 
 					fd.setFileFilter(new javax.swing.filechooser.FileFilter() {

@@ -2,7 +2,7 @@ package wzc.zcminer.global;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//case集合类
 public class CaseCollection {
 	List<EventCase> cases;
 

@@ -24,7 +24,7 @@ import sun.applet.Main;
 import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
-
+//数据导入面板
 public class ImportPanel extends JPanel {
 	static ColumnSelectableJTable table;
 	static JPanel radioPanel;
@@ -35,7 +35,7 @@ public class ImportPanel extends JPanel {
 	static JRadioButton resourseButton;
 	static JRadioButton otherButton;
 	static ButtonGroup buttonGroup;
-	static JTextField timeText;
+	static JTextField timeText; //时间模式输入
 	final static int MAXHEADINDEX = 20;
 	int[] headIndex;
 	String[][] rowData;
@@ -45,7 +45,7 @@ public class ImportPanel extends JPanel {
 		// TODO Auto-generated constructor stub
 		try {
 			headIndex = new int[MAXHEADINDEX];
-
+			//按钮组的设置
 			setLayout(new BorderLayout());
 			radioPanel = new JPanel();
 			radioPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -77,7 +77,7 @@ public class ImportPanel extends JPanel {
 					headIndex[table.column] = 4;
 				}
 			});
-			
+			//时间模板输入
 			timeText = new JTextField();
 			timeText.setText("dd.MM.yy HH:mm");
 
@@ -153,7 +153,7 @@ public class ImportPanel extends JPanel {
 			JScrollPane dataPanel = new JScrollPane(table);
 			add(dataPanel, BorderLayout.CENTER);
 			reader.close();
-
+			//逻辑分析代码，得出所有活动数
 			JButton okButton = new JButton("开始分析");
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -185,13 +185,14 @@ public class ImportPanel extends JPanel {
 						}
 						MainFrame.caseCollection.addCase(eventCase);
 					}
-
+					
 					MainFrame.graphNet.setMemory();
 					int[] temp = new int[MainFrame.graphNet.activityCount]; 
 					int[][] tempQue = new int[MainFrame.graphNet.activityCount][MainFrame.graphNet.activityCount]; 
 					int lastActivityId = -1;
 					String lastCase = "";
 					Date lastDate = new Date();
+					//按顺序遍历得出case，并运算各个参数
 					for (int i = 0; i < myEntries.size(); i++) {
 						EventCase eventCase = MainFrame.caseCollection
 								.getCase(i);

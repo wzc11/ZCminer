@@ -51,6 +51,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 	static JPanel labelPanel;
 	static JPanel headPanel;
 	static JPanel centerPanel;
+	static JPanel animationPanel;
 	static JPanel controlPanel;
 	static JButton animationButton;
 	mxGraphComponent graphComponent;
@@ -83,8 +84,11 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		labelPanel.add(new JLabel("Path"));
 		labelPanel.add(new JLabel("Activity"));
 		
+		animationPanel = new JPanel(new FlowLayout());
+		
+		
 		String[] boxString = {"Absolute Frequence", "Total Duration", "Mean Duration", "Max Duration"
-				, "Min Duration"};
+				, "Min Duration", "Case Frequence", "Max Repetition"};
 		modelType = new JComboBox<String>(boxString);
 		modelType.setSelectedItem("Absolute Frequence");
 		modelType.addItemListener(new ItemListener(){
@@ -170,9 +174,12 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				}
 			}
 		});
+		
+		animationPanel.add(new JLabel("播放速度"));
+		animationPanel.add(animationSlider);
 		centerPanel.add(animationButton,BorderLayout.NORTH);
 		
-		centerPanel.add(animationSlider, BorderLayout.CENTER);
+		centerPanel.add(animationPanel, BorderLayout.CENTER);
 		
 		
 		controlPanel.add(headPanel, BorderLayout.NORTH);
@@ -391,6 +398,14 @@ public class GraphPanel extends JPanel implements ComponentListener {
 							value = MainFrame.graphNet.activityNames[i];
 						}
 						break;
+					case 5:
+						value = MainFrame.graphNet.activityNames[i] + "\n" +
+								MainFrame.graphNet.activityCaseFre[i];
+						break;
+					case 6:
+						value = MainFrame.graphNet.activityNames[i] + "\n" +
+								MainFrame.graphNet.maxActivityRep[i];
+						break;	
 					default:
 						break;
 					}
@@ -450,6 +465,11 @@ public class GraphPanel extends JPanel implements ComponentListener {
 									value = "";
 								}
 								break;
+							case 5:
+								value = MainFrame.graphNet.activityCaseQueFre[i][j]+"";
+								break;
+							case 6:
+								value = "";
 							default:
 								break;
 							}

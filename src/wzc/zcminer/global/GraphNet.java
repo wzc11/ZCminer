@@ -11,6 +11,9 @@ public class GraphNet {
 	public String[] activityNames;
 	public int[][] activityQueFre;
 	public int[] activityFre;
+	public int[] activityCaseFre;
+	public int[][] activityCaseQueFre;
+	public int[] maxActivityRep;
 	public long[] activityTime;
 	public long[][] activityQueTime; 
 	public long[] maxActivityTime;
@@ -80,6 +83,9 @@ public class GraphNet {
 		activityNames = new String[activityCount];
 		activityQueFre = new int[activityCount][activityCount];
 		activityFre = new int[activityCount];
+		activityCaseFre = new int[activityCount];
+		activityCaseQueFre = new int[activityCount][activityCount];
+		maxActivityRep = new int[activityCount];
 		activityNames[0] = "begin";
 		activityNames[1] = "end";
 		activityTime = new long[activityCount];

@@ -129,30 +129,6 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		headPanel.add(sliderJPanel, BorderLayout.CENTER);
 	//	centerPanel.add(sliderJPanel,BorderLayout.CENTER);
 		
-		timeFlag = 0;
-		animationButton = new JButton("播放动画");
-		animationButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (timeFlag == 0){
-					timeFlag = 1;
-					animationButton.setText("结束播放");
-					modelType.setEnabled(false);
-					animationSlider.setEnabled(true);
-					paintAnimation();
-				} else{
-					animationButton.setText("播放动画");
-					modelType.setEnabled(true);
-					animationSlider.setEnabled(false);
-					timeFlag = 0;
-					timer.cancel();
-					paintGraph();
-					
-				}
-			}
-		});
-		centerPanel.add(animationButton,BorderLayout.NORTH);
-		
-		
 		speed = 1;
 		animationSlider = new JSlider();
 		animationSlider.setMinimum(1);
@@ -168,6 +144,34 @@ public class GraphPanel extends JPanel implements ComponentListener {
 				}
 			}
 		});
+		timeFlag = 0;
+		animationButton = new JButton("播放动画");
+		animationSlider.setEnabled(false);
+		animationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (timeFlag == 0){
+					timeFlag = 1;
+					animationButton.setText("结束播放");
+					modelType.setEnabled(false);
+					animationSlider.setEnabled(true);
+			//		pathSlider.setEnabled(false);
+			//		activitySlider.setEnabled(false);
+					paintAnimation();
+				} else{
+					animationButton.setText("播放动画");
+					modelType.setEnabled(true);
+					animationSlider.setEnabled(false);
+					pathSlider.setEnabled(true);
+					activitySlider.setEnabled(true);
+					timeFlag = 0;
+					timer.cancel();
+					paintGraph();
+					
+				}
+			}
+		});
+		centerPanel.add(animationButton,BorderLayout.NORTH);
+		
 		centerPanel.add(animationSlider, BorderLayout.CENTER);
 		
 		
@@ -268,7 +272,10 @@ public class GraphPanel extends JPanel implements ComponentListener {
             		lastActivityId = activityId;
             	}
             	
-            	for (int i = 2; i< MainFrame.graphNet.activityCount; i++){
+            	for (int i = 2; i< MainFrame.graphNet.activityCount; i++)
+            		if (MainFrame.graphNet.activityFre[i] >= temp[activitySlider
+            		                      						.getValue()])
+            	{
             		graph.cellLabelChanged(v[i], MainFrame.graphNet.activityNames[i] + "\n"+activityEvent[i], false);
             		if (activityEvent[i] > 0){
             			int g = activityEvent[i];

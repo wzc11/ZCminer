@@ -154,8 +154,8 @@ public class GraphPanel extends JPanel implements ComponentListener {
 					animationButton.setText("结束播放");
 					modelType.setEnabled(false);
 					animationSlider.setEnabled(true);
-			//		pathSlider.setEnabled(false);
-			//		activitySlider.setEnabled(false);
+					pathSlider.setEnabled(false);
+					activitySlider.setEnabled(false);
 					paintAnimation();
 				} else{
 					animationButton.setText("播放动画");
@@ -231,7 +231,14 @@ public class GraphPanel extends JPanel implements ComponentListener {
             public void run() {  
             	currentTime=currentTime + speed;
             	if (currentTime > MainFrame.graphNet.endTime){
-            		cancel();
+            		animationButton.setText("播放动画");
+					modelType.setEnabled(true);
+					animationSlider.setEnabled(false);
+					pathSlider.setEnabled(true);
+					activitySlider.setEnabled(true);
+					timeFlag = 0;
+					paintGraph();
+					timer.cancel();
             	}
             	int[] activityEvent = new int[MainFrame.graphNet.activityCount];
             	int[][] activityEventEdge = new int[MainFrame.graphNet.activityCount][MainFrame.graphNet.activityCount];

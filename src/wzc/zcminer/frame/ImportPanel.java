@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import sun.applet.Main;
 
+import wzc.zcminer.global.CaseCollection;
 import wzc.zcminer.global.EventCase;
 
 import com.opencsv.CSVReader;
@@ -111,12 +112,16 @@ public class ImportPanel extends JPanel {
 			buttonGroup.add(resourseButton);
 			buttonGroup.add(otherButton);
 			add(radioPanel, BorderLayout.PAGE_START);
-
+			//csv数据导入
 			CSVReader reader = new CSVReader(new FileReader(dataName));
 			myEntries = reader.readAll();
 			String[] headlines = myEntries.remove(0);
 			rowData = myEntries.toArray(new String[0][]);
-			String [][] tableData = myEntries.subList(0, 1000).toArray(new String[0][]);
+			int maxLine = 1000;
+			if (myEntries.size() < 1000){
+				maxLine = myEntries.size();
+			}
+			String [][] tableData = myEntries.subList(0, maxLine).toArray(new String[0][]);
 			
 			table = new ColumnSelectableJTable(tableData, headlines);
 
@@ -193,7 +198,7 @@ public class ImportPanel extends JPanel {
 					String lastCase = "";
 					Date lastDate = new Date();
 					//按顺序遍历得出case，并运算各个参数
-					for (int i = 0; i < myEntries.size(); i++) {
+					for (int i = 0; i < MainFrame.caseCollection.getSize(); i++) {
 						EventCase eventCase = MainFrame.caseCollection
 								.getCase(i);
 						String activityName = eventCase.getActivity();
@@ -225,6 +230,7 @@ public class ImportPanel extends JPanel {
 										lastActivityId, 1);
 								MainFrame.graphNet.addActivityQueFre(0,
 										activityId);
+								tempQue[lastActivityId][1]++;
 							} else{
 								MainFrame.graphNet.addActivityQueFre(0,
 										activityId);
@@ -244,6 +250,7 @@ public class ImportPanel extends JPanel {
 									tempQue[j][k] = 0;
 								}
 							}
+							tempQue[0][activityId]++;
 							temp[activityId]++;
 							lastCase = caseName;
 							lastActivityId = activityId;
@@ -251,6 +258,7 @@ public class ImportPanel extends JPanel {
 							MainFrame.graphNet.addActivityFre(lastActivityId);
 						}
 					}
+					tempQue[lastActivityId][1]++;
 					for (int j=0; j< MainFrame.graphNet.activityCount; j++){
 						if (temp[j] > MainFrame.graphNet.maxActivityRep[j]){
 							MainFrame.graphNet.maxActivityRep[j] = temp[j];

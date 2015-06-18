@@ -121,9 +121,9 @@ public class GraphPanel extends JPanel implements ComponentListener {
 		//活动参数滑块
 		activitySlider = new JSlider(JSlider.VERTICAL);
 		activitySlider.setMinimum(0);
-		activitySlider.setMaximum(MainFrame.graphNet.activityCount);
+		activitySlider.setMaximum(MainFrame.graphNet.activityCount-1);
 		activitySlider.setValue(0);
-		activitySlider.setExtent(1);
+		//activitySlider.setExtent(1);
 		activitySlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
@@ -318,7 +318,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
             			if ( MainFrame.graphNet.activityFre[j] >= temp[activitySlider
             			               								.getValue()]
             			               								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
-            			               								get(pathSlider.getValue()) ){ 
+            			               								get(pathSlider.getValue()) && MainFrame.graphNet.activityQueFre[i][j] > 0){ 
             				for (Object edge : graph.getEdgesBetween(v[i], v[j])){
             					graph.cellLabelChanged(edge, activityEventEdge[i][j], false);
             				}
@@ -431,7 +431,7 @@ public class GraphPanel extends JPanel implements ComponentListener {
 						if ((j < 2 || MainFrame.graphNet.activityFre[j] >= temp[activitySlider
 								.getValue()])
 								&& MainFrame.graphNet.activityQueFre[i][j] >= MainFrame.graphNet.activityQueFreSort.
-								get(pathSlider.getValue())) {
+								get(pathSlider.getValue())&& MainFrame.graphNet.activityQueFre[i][j] > 0 ) {
 							
 							String value = MainFrame.graphNet.activityQueFre[i][j]+"";
 							
